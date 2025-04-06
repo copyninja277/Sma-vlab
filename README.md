@@ -1,177 +1,117 @@
-# Social Media Analysis App
 
-A full-stack application for extracting, analyzing, and visualizing YouTube and Reddit comment datasets. This project uses **Flask (Python)** for the backend and **React.js** for the frontend, enabling users to:
+# Sentiment Analysis Virtual Lab
 
-- Scrape YouTube or Reddit data via API
-- Perform sentiment analysis
-- Generate TF-IDF scores
-- Discover latent topics (via LDA)
-- Visualize word co-occurrence networks
-- Display word clouds and various charts
+This project is a **Virtual Lab for Sentiment Analysis**, designed to help users understand and explore sentiment classification on social media texts using modern NLP techniques. It supports both **single text inputs** and **bulk file uploads (CSV)** with sentiment visualization via pie charts.
 
----
+## Project Overview
 
-## Project Structure
-
-```
-├── backend/
-│   ├── mainfl.py             # Flask API to scrape data from YouTube & Reddit
-│   ├── analysis.py           # Flask API for NLP analysis
-│   ├── youtube-comments.csv  # Sample YouTube data
-│   └── reddit_comments.csv   # Sample Reddit data
-│
-├── frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   │   ├── Homepage.js           # Landing page with navigation
-│   │   │   ├── DataExtraction.js     # UI to trigger YouTube/Reddit scraping
-│   │   │   ├── ScrapedResults.js     # Shows scraped results before analysis
-│   │   │   ├── DataAnalysis.js       # Shows sentiment scores, TF-IDF, topics, centrality
-│   │   │   └── DataVisualization.js  # Visual charts, word cloud, network graph
-│   │   └── App.js
-│   ├── public/
-│   └── package.json
-```
-
----
+This virtual lab allows students, researchers, and practitioners to:
+- Understand sentiment analysis using transformer models like **BERT (RoBERTa variant)**.
+- Perform real-time sentiment detection on user queries or uploaded `.csv` files.
+- Visualize sentiment distribution with clear, intuitive charts.
+- Learn the full NLP pipeline from text input to model inference and visualization.
 
 ## Features
 
-* **Data Extraction (mainfl.py)**
-  - `POST /scrape/youtube` → Fetch comments using a video ID
-  - `POST /scrape/reddit` → Fetch comments from a Reddit post or subreddit
-  - Saves output as CSV used by `analysis.py`
+- ✅ Supports `positive`, `neutral`, and `negative` sentiment detection.
+- ✅ Uses `cardiffnlp/twitter-roberta-base-sentiment` for classification.
+- ✅ File input via `.csv` (first column treated as input text).
+- ✅ Interactive UI built with **React** and **Flask** backend.
+- ✅ Auto-generated sentiment pie charts from CSV input.
+- ✅ Clear feedback and result summary.
 
-* **Backend NLP (analysis.py)**
-  - Detects platform and loads appropriate CSV
-  - Cleans and extracts the `text` column
-  - Performs:
-    - Sentiment analysis (TextBlob)
-    - TF-IDF score extraction
-    - LDA Topic Modeling
-    - Word Co-occurrence network graph
-    - Degree centrality
-    - Word Cloud (base64 PNG)
+## Tech Stack
 
-* **Frontend (React)**
-  - `Homepage.js`: Navigation to extraction and analysis
-  - `DataExtraction.js`: Trigger scraping APIs for YouTube/Reddit
-  - `ScrapedResults.js`: Shows preview of scraped data
-  - `DataAnalysis.js`: Shows sentiment, TF-IDF, topics, centrality
-  - `DataVisualization.js`: Renders pie charts, word cloud, network graph
+| Component     | Technology                      |
+|---------------|----------------------------------|
+| Frontend      | React.js, HTML/CSS              |
+| Backend       | Flask (Python)                  |
+| Model         | BERT via HuggingFace Transformers |
+| Visualization | Matplotlib                      |
 
----
+## Getting Started
 
-## Setup Instructions
-
-### Requirements
-
-- Python 3.8 or higher
-- Node.js v18 or higher
-
-### Backend Setup
+### 1. Clone the Repository
 
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-pip install -r requirements.txt
-python mainfl.py  # Run scraping server
-python analysis.py  # Run analysis server (port 5002)
+git clone https://github.com/yourusername/sentiment-lab.git
+cd sentiment-lab
 ```
 
-### Frontend Setup
+### 2. Backend Setup (Python)
+
+Install dependencies:
 
 ```bash
-cd frontend
+pip install -r requirements.txt
+```
+
+Start the Flask server:
+
+```bash
+python app.py
+```
+
+### 3. Frontend Setup (React)
+
+```bash
+cd client
 npm install
 npm start
 ```
 
----
+Make sure React is running on `http://localhost:3000` and Flask on `http://localhost:5003`.
 
-## API Configuration
+## Folder Structure
 
-### YouTube API Setup:
+```
+sentiment-lab/
+├── app.py                     # Flask API for prediction
+├── requirements.txt
+├── /client                    # React frontend
+│   ├── SentimentCheck.js
+│   ├── SentimentLanding.js
+│   └── ...
+└── /models                    # Optional: Saved models/vectorizers
+```
 
-1. Go to https://console.developers.google.com
-2. Create a new project and enable the **YouTube Data API v3**
-3. Generate an API key under **Credentials**
-4. Replace the placeholder in `mainfl.py`:
-   ```python
-   API_KEY = "YOUR_YOUTUBE_API_KEY"
-   ```
+## Input Types
 
-### Reddit API Setup:
+### 1. Query Text (Single)
 
-1. Visit https://www.reddit.com/prefs/apps
-2. Click **create an app**:
-   - Name: Your app name
-   - Type: Script
-   - Redirect URI: http://localhost:8080
-3. Note down your **client ID** and **secret**
-4. Replace them in `mainfl.py`:
-   ```python
-   CLIENT_ID = "YOUR_CLIENT_ID"
-   CLIENT_SECRET = "YOUR_CLIENT_SECRET"
-   USER_AGENT = "YOUR_USER_AGENT"
-   ```
+- Type your text and click "Check Sentiment".
+- Example:
+  > "The river looks much cleaner after the cleanup drive."
 
----
+### 2. File Input (Bulk)
 
-## Sample Endpoints
+- Upload `.csv` file with 1st column as input text.
+- A pie chart will be displayed showing sentiment breakdown.
 
-* From `mainfl.py`
-  - `POST /scrape/youtube` with `{ video_id: "abc123" }`
-  - `POST /scrape/reddit` with `{ subreddit: "askreddit" }`
+## Example Sentences
 
-* From `analysis.py`
-  - `POST /analyze` with `{ platform: "youtube" | "reddit" }`
-  - Response JSON includes:
-    - `sentiments`, `sentiment_summary`
-    - `tfidf`, `topics`, `centralities`
-    - `network.nodes`, `network.edges`
-    - `wordcloud` (base64 PNG)
+| Sentiment | Example |
+|-----------|---------|
+| Positive  | "I love the initiative to clean the river!" |
+| Neutral   | "The program started last year." |
+| Negative  | "The river still looks very polluted." |
 
----
+## Visual Output
 
-## Dependencies
+- Real-time prediction result for query.
+- Pie chart for CSV input showing sentiment percentages.
 
-### Backend
+## Future Scope
 
-- Flask
-- Flask-CORS
-- pandas
-- scikit-learn
-- textblob
-- networkx
-- wordcloud
-- matplotlib
-
-### Frontend
-
-- React.js
-- Axios
-- Recharts
-- react-force-graph-2d
-- html2canvas (for generating images for report)
-
----
-
-## Notes
-
-- Ensure your dataset includes a valid text column such as `text`, `comment`, `body`, or `message`
-- Word cloud and co-occurrence graph images are generated server-side and served as base64
-- Report generation in `.doc` format includes charts and insights
-
----
+- Add more languages & multilingual models.
+- Live API integration from Twitter, YouTube.
+- Admin dashboard for managing uploads & results.
+- Export results as PDF/DOCX reports.
 
 ## License
 
-This project is for educational and experimental purposes.
+This project is open-source and available under the [MIT License](LICENSE).
 
 ---
 
-## Author
-
-Built by Gunjan Kadam, Kapil Bhatia, Dakshita Kolte powered by Flask, React
+Built with ❤️ for NLP learners, researchers, and data enthusiasts.
